@@ -75,7 +75,7 @@
         <div class="zheader">
             <div style="float: left; text-transform: uppercase; width: 33%; text-align: left; font-weight: bold;"><img style="vertical-align: text-top;" ng-src="images/{{connectedIcon()}}" />{{model.sid}}</div>
             <div style="float: right; width: 33%; text-align: right;">{{model.username}}&nbsp;<img src="images/gear2.png" style="vertical-align: text-top; opacity: .6;" ng-click="showSettings()" /></div>
-            <div style="font-weight: bold;"><img src="favicon.png" height="16" style="vertical-align: middle;" /> scrum<span style="color: #FFEFCC;">with</span>.me</div>
+            <div style="font-weight: bold;">scrum<span style="color: #FFEFCC;">with</span>sige</div>
         </div>
 
         <div ng-show="!model.isLoggedIn()" style="padding: 20px;">
@@ -103,7 +103,7 @@
 
         <div ng-show="model.isLoggedIn()">
 
-            <span ng-repeat="value in [1,2,3,5,8,13,20,40,100]">
+            <span ng-repeat="value in [0,0.5,1,2,3,5,8,13,20,40,100]">
                 <button class="point-button" ng-click="vote(value)" ng-class="{selected: model.vote == value}">{{value}}</button>
             </span>
 

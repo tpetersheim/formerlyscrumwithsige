@@ -10,7 +10,7 @@
             body {
                 text-align: center;
 
-                background-image: url('images/page-background.jpg');
+                background-image: url('images/slippers.jpg');
                 background-size: cover;
                 background-repeat: no-repeat;
 
@@ -63,16 +63,16 @@
             }
 
             .button_area1 {
-                border-radius: 20px 20px 0 0;
-                top: 100px;
-                right: 50px;
-                cursor: pointer;
+	border-radius: 20px 20px 0 0;
+	top: 99px;
+	right: 83px;
+	cursor: pointer;
             }
 
             .button_area2 {
-                border-radius: 0 0 20px 20px;
-                top: 220px;
-                right: 50px;
+	border-radius: 0 0 20px 20px;
+	top: 222px;
+	right: 83px;
             }
 
             .container {
@@ -124,7 +124,7 @@
             @media (max-width: 1000px) {
 
                 body {
-                    background-image: url('images/page-background-portrait.jpg');
+                    background-image: url('images/slippers.jpg');
                     width: 100%;
                 }
 
@@ -199,42 +199,24 @@
         <div class="container">
 
             <div class="mini-header">
-                <h2><img src="images/card-fan-small.png" /> scrum<span style="color: #FFEFCC;">with</span>.me</h2>
+                <h2>scrumwithsige</h2>
             </div>
 
 
             <div class="button-container">
                 <div class="button_area button_area1" ng-click="host()">
 
-                    <h1>Host</h1>
-                    <p>Start a session on a shared screen</p>
+                    <h1>Start</h1>
 
                 </div>
 
                 <div class="button_area button_area2">
 
-                    <h1>Join</h1>
+                  <h1>Join</h1>
                     <p><input type="number" ng-model="sessionid" placeholder="enter session code"><img src="images/arrow-right.png" height="28" style="vertical-align: middle; cursor: pointer;" ng-click="join()" /></p>
 
                 </div>
             </div>
-
-
-            <div class="text-contianer">
-                <h1 class="shadowed">No hassle<br/> Planning Poker</h1>
-                <p>Just the right set of features for quick <br/> ad-hoc estimation sessions.  </p>
-                <ul>
-                    <li>Virtual cards</li>
-                    <li>Mobile voting interface</li>
-                    <li>No login necessary</li>
-                    <li>Nothing in the way</li>
-                </ul>
-                <br/>
-            </div>
-
-
-
-
         </div>
 
         <div class="mini-footer">
