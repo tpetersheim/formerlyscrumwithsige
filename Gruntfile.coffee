@@ -25,7 +25,7 @@ module.exports = (grunt) ->
         # tasks
 
         clean:
-            workspaces: ['public/dist', 'build', 'scrumwithme.*.zip']
+            workspaces: ['public/dist', 'build', 'scrumwithsige.*.zip']
 
         open:
             dev:
@@ -73,7 +73,7 @@ module.exports = (grunt) ->
         compress:
             build:
                 options:
-                    archive: "<%=pkg.name%>.<%=appVersion%>.zip"
+                    archive: "<%=pkg.name%>.zip"
                     mode: "zip"
                 cwd: "build"
                 src: ["**"]
