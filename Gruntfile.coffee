@@ -109,5 +109,5 @@ module.exports = (grunt) ->
     require('matchdep').filterAll('grunt-*').forEach(grunt.loadNpmTasks);
 
     # create workflow
-    grunt.registerTask 'default', ['concat', 'replace', 'open', 'concurrent']
+    grunt.registerTask 'default', ['concat', 'replace', 'concurrent']
     grunt.registerTask 'build', ['clean', 'jshint', 'concat', 'uglify', 'replace', 'copy:build', 'compress:build']
