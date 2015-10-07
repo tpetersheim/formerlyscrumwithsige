@@ -27,9 +27,9 @@ module.exports = (grunt) ->
         clean:
             workspaces: ['public/dist', 'build', 'scrumwithme.*.zip']
 
-        open:
-            dev:
-                path: "http://localhost:4000"
+        #open:
+            #dev:
+                #path: "http://localhost:4000"
 
         jshint:
             src: "<%=files.js.src%>"
@@ -111,6 +111,3 @@ module.exports = (grunt) ->
     # create workflow
     grunt.registerTask 'default', ['concat', 'replace', 'open', 'concurrent']
     grunt.registerTask 'build', ['clean', 'jshint', 'concat', 'uglify', 'replace', 'copy:build', 'compress:build']
-
-
-
