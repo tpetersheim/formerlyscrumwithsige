@@ -1,3 +1,3 @@
 dir
-rd node_modules
+rd /S /Q node_modules
 dir
