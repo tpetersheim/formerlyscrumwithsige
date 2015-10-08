@@ -1,3 +1,3 @@
 dir
-rm node_modules
+rd node_modules
 dir
