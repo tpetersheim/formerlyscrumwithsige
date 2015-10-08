@@ -1,1 +1,1 @@
-Publish-AzureWebSite -Name ScrumWithSige -Package scrumwithsige.zip
+Invoke-Expression -Command Publish-AzureWebSite -Name ScrumWithSige -Package scrumwithsige.zip
