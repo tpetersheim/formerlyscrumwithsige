@@ -1,0 +1,1 @@
+Publish-AzureWebSite -Name ScrumWithSige -Package scrumwithsige.zip
