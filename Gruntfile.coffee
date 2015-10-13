@@ -57,7 +57,7 @@ module.exports = (grunt) ->
 
         copy:
             build:
-                src: ["app/**", "public/**", "node_modules/**", ".ebextensions/**", "package.json", "!public/src/**", "!public/vendor/**", "web.config", "server.js"]
+                src: ["app/**", "public/**", "node_modules/express/**", "node_modules/express-http-proxy/**", "node_modules/socket.io/**", ".ebextensions/**", "package.json", "!public/src/**", "!public/vendor/**", "web.config", "server.js"]
                 dest: "build"
                 expand: true
 
