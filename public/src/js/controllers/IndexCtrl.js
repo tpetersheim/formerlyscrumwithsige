@@ -2,7 +2,7 @@
  * Created by nslargent on 5/20/14.
  */
 
-angular.module('ScrumWithMe').controller('IndexCtrl', ['$scope', '$window', function ($scope, $window) {
+angular.module('ScrumWithSige').controller('IndexCtrl', ['$scope', '$window', function ($scope, $window) {
 
     $scope.sessionid = '';
 

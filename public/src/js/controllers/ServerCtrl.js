@@ -2,7 +2,7 @@
  * Created by Nick Largent on 5/19/14.
  */
 
-angular.module('ScrumWithMe').controller('ServerCtrl', ['$scope', '$location', '$timeout', '$cookieStore', 'socket', 'tools', function ($scope, $location, $timeout, $cookieStore, socket, tools) {
+angular.module('ScrumWithSige').controller('ServerCtrl', ['$scope', '$location', '$timeout', '$cookieStore', 'socket', 'tools', function ($scope, $location, $timeout, $cookieStore, socket, tools) {
 
     $scope.newSession = function() {
         sid = tools.generateSessionId();

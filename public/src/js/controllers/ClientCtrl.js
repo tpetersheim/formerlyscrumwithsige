@@ -2,7 +2,7 @@
  * Created by Nick Largent on 5/19/14.
  */
 
-angular.module('ScrumWithMe').controller('ClientCtrl', ['$scope', '$location', '$cookieStore', 'socket', 'tools', function ($scope, $location, $cookieStore, socket, tools) {
+angular.module('ScrumWithSige').controller('ClientCtrl', ['$scope', '$location', '$cookieStore', 'socket', 'tools', function ($scope, $location, $cookieStore, socket, tools) {
 
     var getUser = function() {
         var uid = $cookieStore.get('uid');

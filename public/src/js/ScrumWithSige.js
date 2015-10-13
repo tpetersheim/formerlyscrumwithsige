@@ -1,7 +1,7 @@
 /**
  * Created by Nick Largent on 5/19/14.
  */
-var app = angular.module('ScrumWithMe', ['ngCookies']);
+var app = angular.module('ScrumWithSige', ['ngCookies']);
 
 app.config(['$locationProvider', function($locationProvider) {
     $locationProvider.html5Mode(true);
@@ -9,6 +9,6 @@ app.config(['$locationProvider', function($locationProvider) {
 }]);
 
 app.run(['$rootScope', function($rootScope) {
-    $rootScope.appName = "scrumwith.me";
+    $rootScope.appName = "scrumwithsige";
     $rootScope.appVersion = "{{APP.VERSION}}";
 }]);
