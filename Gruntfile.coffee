@@ -57,7 +57,7 @@ module.exports = (grunt) ->
 
         copy:
             build:
-                src: ["app/**", "public/**", ".ebextensions/**", "package.json", "!public/src/**", "!public/vendor/**", "web.config"]
+                src: ["app/**", "public/**", ".ebextensions/**", "package.json", "!public/src/**", "!public/vendor/**", "web.config", "server.js"]
                 dest: "build"
                 expand: true
 
