@@ -37,8 +37,9 @@ angular.module('ScrumWithSige').controller('ClientCtrl', ['$scope', '$location',
     $scope.model = model;
 
     $scope.vote = function(value) {
-        if (value == model.vote)
+        if (value == model.vote) {
             value = null;
+        }
         model.vote = value;
         socket.emit('vote', value);
     };

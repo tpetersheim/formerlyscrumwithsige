@@ -34,6 +34,7 @@
              color: #222;
             }
 
+
             button.selected {
              border: 1px solid #CCC;
              color: #FFF;
@@ -48,6 +49,14 @@
              filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#58fc22', endColorstr='#3cdf05',GradientType=0 ); /* IE6-9 */
              box-shadow: 0 1px 10px #7F7;
             }
+            button.selectedwithimage {
+                border: 1px solid #CCC;
+                background: #2a9b05;
+                box-shadow: 0 1px 10px #7F7;
+                background-image: url(./images/coffee-inv.png);
+                background-repeat: no-repeat;
+                background-position: center;
+            }
 
             .point-button {
                 width: 80px;
@@ -55,6 +64,16 @@
                 margin: 8px;
                 padding: 0;
                 font-size: 2em;
+            }
+            .point-button-withimage {
+                 width: 80px;
+                height: 90px;
+                margin: 8px;
+                padding: 0;
+                font-size: 2em;
+                background-image: url(./images/coffee.png);
+                background-repeat: no-repeat;
+                background-position: center;
             }
 
             .zheader {
@@ -102,11 +121,13 @@
         </div>
 
         <div ng-show="model.isLoggedIn()">
-
-            <span ng-repeat="value in [0,0.5,1,2,3,5,8,13,20,40,100]">
+            <span ng-repeat="value in [0,0.5,1,2,3,5,8,13,20,'?']">
                 <button class="point-button" ng-click="vote(value)" ng-class="{selected: model.vote == value}">{{value}}</button>
             </span>
 
+            <span ng-repeat="value in [999]">
+                <button class="point-button-withimage" ng-click="vote(value)" ng-class="{selectedwithimage: model.vote == value}">&nbsp;</button>
+            </span>
             <div style="background-color: lightgrey; position: fixed; bottom: 0; height: 50px; width: 100%;">
                 <button ng-click='reset()' style="margin: 10px; height: 30px; float: left;">Reset All</button>
                 <img ng-src="{{model.qrcodeUrl}}" style="margin: 10px; height: 30px;" ng-click="showConnectCode()">
