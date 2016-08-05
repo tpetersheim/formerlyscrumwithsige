@@ -32,7 +32,13 @@ angular.module('ScrumWithSige').controller('ClientCtrl', ['$scope', '$location',
         isLoggedIn: function() {
             return this.username && this.username.length > 0;
         },
-        vote: -1
+        vote: -1,
+        settings: {
+            showVoteSelection: true
+        },
+        serverSettings: {
+            cardNumbers: []
+        }
     };
     $scope.model = model;
 
@@ -53,13 +59,23 @@ angular.module('ScrumWithSige').controller('ClientCtrl', ['$scope', '$location',
         model.showConnectCode = !model.showConnectCode;
     };
 
-    $scope.saveSettings = function() {
+    $scope.saveSettings = function () {
         $scope.join();
         model.showSettings = false;
+       $scope.writeSettings();
     };
 
     $scope.cancelSettings = function() {
         model.showSettings = false;
+    };
+
+    $scope.loadSettings = function () {
+        model.settings = $cookieStore.get('client-settings') || model.settings;
+    };
+    $scope.loadSettings();
+
+    $scope.writeSettings = function () {
+        $cookieStore.put('client-settings', model.settings);
     };
 
     socket.on('connect', function(){
@@ -80,8 +96,9 @@ angular.module('ScrumWithSige').controller('ClientCtrl', ['$scope', '$location',
         alert(reason);
     });
 
-    socket.on('loggedIn', function() {
+    socket.on('loggedIn', function(hostSettings) {
         model.loggedIn = true;
+        model.serverSettings = hostSettings;
     });
 
     socket.on('reset', function(mode) {
@@ -91,6 +108,10 @@ angular.module('ScrumWithSige').controller('ClientCtrl', ['$scope', '$location',
     $scope.reset = function() {
         socket.emit("reset");
     };
+
+    socket.on('updateSettings', function (hostSettings) {
+        model.serverSettings = hostSettings;
+    })
 
     $scope.leave = function() {
         socket.emit("leave");

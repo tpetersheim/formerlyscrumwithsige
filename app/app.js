@@ -41,6 +41,7 @@ var sessionStats = {
     oldestSession: null
 };
 var sessions = {};
+var hostSettings = {};
 
 io.sockets.on('connection', function (socket) {
 
@@ -106,7 +107,7 @@ io.sockets.on('connection', function (socket) {
         console.log(u);
         u.socket = socket;
 
-        socket.emit('loggedIn');
+        socket.emit('loggedIn', hostSettings);
         sendDumpToHost(data.sid);
     });
 
@@ -174,6 +175,17 @@ io.sockets.on('connection', function (socket) {
             sendDumpToHost(socket.sid);
         }
     });
+
+    socket.on("updateSettings", function (settings) {
+        console.log(" ================================================");
+        console.log("updateSettings: " + JSON.stringify(settings));
+        
+        hostSettings = settings;
+        if (sessions[socket.sid]) {
+            io.sockets.in(socket.sid).emit('updateSettings', settings);
+            sendDumpToHost(socket.sid);
+        }
+    })
 
     var sendDumpToHost = function(sid) {
         var s = sessions[sid];

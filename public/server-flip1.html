@@ -25,6 +25,8 @@
                 padding: 4px;
                 text-align: center;
                 font-weight: bold;
+                height: 15px;
+                overflow: hidden;
             }
 
             .disconnected {
@@ -45,43 +47,69 @@
                 perspective: 800px;
                 position: relative;
             }
-                .flip .card2 {
-                    width: 100%;
-                    height: 100%;
-                    transform-style: preserve-3d;
-                    transition: 0.5s;
-                }
-                    .flip .card2.flipped {
-                        transform: rotatey(-180deg);
-                    }
-                    .flip .card2.unknown {
-                        opacity: 0.5;
-                    }
-                    .flip .card2 .face {
-                        width: 100%;
-                        height: 100%;
-                        z-index: 2;
-                        font-family: Arial;
-                        font-size: 4em;
-                        font-weight: bold;
-                        text-align: center;
-                        line-height: 230px;
+            .flip .card2 {
+                width: 100%;
+                height: 235px;
+                transform-style: preserve-3d;
+                transition: 0.5s;
+            }
+            .flip .card2.flipped {
+                transform: rotatey(-180deg);
+            }
+            .flip .card2.unknown {
+                opacity: 0.5;
+            }
+            .flip .card2 .face {
+                width: 100%;
+                height: 235px;
+                z-index: 2;
+                font-family: Arial;
+                font-size: 4em;
+                font-weight: bold;
+                text-align: center;
+                line-height: 230px;
 
-                        position: absolute;
-                        backface-visibility: hidden;
-                    }
-                    .flip .card2 .front {
-                        background-image: url('images/cardback.png');
-                        background-size: 100% 100%;
-                        border: 1px solid white;
-                    }
+                position: absolute;
+                backface-visibility: hidden;
+            }
+            .flip .card2 .front {
+                background-image: url('images/cardback.png');
+                background-size: 100% 100%;
+                border: 1px solid white;
+            }
 
-                    .flip .card2 .back {
-                        transform: rotatey(180deg);
-                        border: 1px solid darkgray;
-                        border-radius: 6px;
-                        background-color: white;
-                    }
+            .flip .card2 .back {
+                transform: rotatey(180deg);
+                border: 1px solid darkgray;
+                border-radius: 6px;
+                background-color: white;
+            }
+
+
+            .stats-container {    
+                font-weight: bold;
+                font-size: 1.2em;
+                font-family: Arial;
+                margin: 40px auto;
+                padding: 10px;
+                width: 230px;
+                text-align: center;
+                border: 1px solid darkgray;
+                background-color: white;
+            }
+
+            .stat span:first-child {    
+                display: inline-block;
+                width: 70%;
+                margin-top: 3px;
+                text-align: right;
+            }
+
+            .stat span:last-child {
+                display: inline-block;
+                width: 30%;
+            }
+
 
 
             .qrcode {
@@ -120,6 +148,14 @@
             .ng-cloak {
                 display: none;
             }
+
+            .app-version {
+                margin: 2px 20px 0 0;
+                color: rgba(0, 0, 0, .4);
+                right: 0;
+                position: absolute;
+                font-size: 8pt;
+            }
         </style>
 
 
@@ -149,65 +185,118 @@
 
 
     </head>
-    <body class="ng-cloak">
+<body class="ng-cloak">
 
-        <div class="header">
-            <div style="margin: 4px; color: rgba(0, 0, 0, .4); right: 0; position: absolute; font-size: 8pt;" ng-bind="appVersion"></div>
-            <h2 style="text-align: center; margin: 4px;"> scrum<span style="color: #FFEFCC;">with</span>sige.azurewebsites.net</h2>
+    <div class="header">
+        <div class="right">
+            <div class="app-version" ng-bind="appVersion"></div>
+            <img src="images/gear2.png" style="opacity: .6;" ng-click="showSettings()" />
         </div>
+        <h2 style="text-align: center; margin: 4px;"> scrum<span style="color: #FFEFCC;">with</span>sige.azurewebsites.net</h2>
+    </div>
 
-        <div ng-show="model.showConnectCode" style="position: absolute; zbottom: 55px; width: 100%; top: 150px; z-index: 99;">
-            <div style="border: 1px solid black; background: white; padding: 20px; text-algin: center; margin-left: auto; margin-right: auto; width: 600px;">
-                <img ng-src="{{model.qrcodeUrlBig}}" width="600" ng-click="showConnectCode()">
+    <div ng-show="model.showConnectCode" style="position: absolute; zbottom: 55px; width: 100%; top: 150px; z-index: 99;">
+        <div style="border: 1px solid black; background: white; padding: 20px; text-align: center; margin-left: auto; margin-right: auto; width: 600px;">
+            <img ng-src="{{model.qrcodeUrlBig}}" width="600" ng-click="showConnectCode()">
+        </div>
+    </div>
+
+    <div ng-show="model.showSettings" class="settings-popup">
+        <div style="padding: 20px;">
+            <div style="text-align: left;width: 410px;margin: auto;">
+                <input type="checkbox" ng-model="model.settings.showVoteAverage"> Show Vote Average
+                <br />
+                <span style="margin-left: 25px;">
+                    Number of Decimal Places <input type="number" max="2" min="0" ng-disabled="!model.settings.showVoteAverage" ng-model="model.settings.voteAverageNumDecimals">
+                </span>
+                <br />
+                <input type="checkbox" ng-model="model.settings.showVoteSeparation"> Show Vote Separation
+                <br />
+                <span style="margin-left: 25px;">
+                    Threshold <input type="number" min="-1" ng-disabled="!model.settings.showVoteSeparation" ng-model="model.settings.voteSeparationThreshold"> (Set -1 to ignore)
+                </span>
+                
+                <br />
+                <input type="checkbox" ng-model="model.settings.showVoteMinimum"> Show Vote Minimum
+                <br />
+                <input type="checkbox" ng-model="model.settings.showVoteMaximum"> Show Vote Maximum
+                <br />
+                Card Numbers <input type="text" ng-model="model.settings.cardNumbersString" style="width: 200px;" />
             </div>
+            <br />
+            <button ng-click='saveSettings()' style="margin: 20px; padding: 10px;">Save</button>
+
+            <hr />
+            <b>Debug Info</b><br />
+            Transport: {{model.transport}}<br />
         </div>
+    </div>
 
-        <div ng-show="model.users.length == 0">
-            <h1 style="text-align: center; font-family: sans-serif;">Empty Session</h1>
-        </div>
+    <div ng-show="model.users.length == 0">
+        <h1 style="text-align: center; font-family: sans-serif;">Empty Session</h1>
+    </div>
 
-        <div style="margin: auto" ng-style="getCardContainerStyle()">
+    <div class="clearfix" style="margin: auto" ng-style="getCardContainerStyle()">
 
-            <div ng-repeat="user in model.users" class="card-container flip">
-                <div class="card-name" ng-class="{'disconnected': !user.connected}">{{user.username}} <a href="#" ng-click="kick(user)"><img src="images/close.gif" border="0" /></a></div>
-                <div class="card2" ng-class="{'flipped': model.allIn, 'unknown': user.vote == null}">
-                    <div class="face front">
-                    </div>
-                    <div class="face back">
-                        <span ng-show="user.vote != -1 && user.vote == user.orgVote && user.vote != 999">{{user.vote}}</span>
-                        <span ng-show="user.vote != -1 && user.orgVote == 999 && user.vote != 999">{{user.vote}}</span>
-                        <span ng-show="user.vote == 999"><img style="padding-top: 50px;" src="images/coffee-large.png" alt="Coffee"/></span>
-                        <span ng-show="user.vote != -1 && user.vote != user.orgVote && user.vote != 999 && user.orgVote != 999"><span style="position: absolute; color: lightgray; font-weight: normal; text-decoration: line-through; font-size: .5em; top: -90px; left: 10px;">{{user.orgVote}}</span>{{user.vote}}</span>
-                    </div>
+        <div ng-repeat="user in model.users" class="card-container flip">
+            <div class="card-name" ng-class="{'disconnected': !user.connected}">{{user.username}} <a href="#" ng-click="kick(user)"><img src="images/close.gif" border="0" /></a></div>
+            <div class="card2" ng-class="{'flipped': model.allIn, 'unknown': user.vote == null}">
+                <div class="face front">
+                </div>
+                <div class="face back">
+                    <span ng-show="user.vote != -1 && user.vote == user.orgVote && user.vote != 999">{{user.vote}}</span>
+                    <span ng-show="user.vote != -1 && user.orgVote == 999 && user.vote != 999">{{user.vote}}</span>
+                    <span ng-show="user.vote == 999"><img style="padding-top: 50px;" src="images/coffee-large.png" alt="Coffee" /></span>
+                    <span ng-show="user.vote != -1 && user.vote != user.orgVote && user.vote != 999 && user.orgVote != 999"><span style="position: absolute; color: lightgray; font-weight: normal; text-decoration: line-through; font-size: .5em; top: -90px; left: 10px;">{{user.orgVote}}</span>{{user.vote}}</span>
                 </div>
             </div>
-
         </div>
 
-        <div class="footer">
-            <div class="tools">
-                <a href="#" ng-click="newSession()">New Session</a>
-            </div>
+    </div>
 
-            <div class="qrcode">
-                <a style="text-decoration: none; color: white; letter-spacing: 3pt;" href="{{model.joinUrl}}" target="_blank"><span class="sessionid" ng-bind="model.sid"></span></a><br/>
-                <img ng-src="{{model.qrcodeUrl}}" ng-click="showConnectCode()">
-            </div>
+    <div class="stats-container" ng-show="showStatsContainer()">
+        <div class="stat" ng-show="model.settings.showVoteAverage">
+            <span>Average:</span><span ng-bind="model.average"></span>
+        </div>
+        <div class="stat" ng-show="model.settings.showVoteSeparation" ng-style="getVoteSeparationStyle()">
+            <span>Separation:</span><span ng-bind="model.separation"></span>
+        </div>
+        <div class="stat" ng-show="model.settings.showVoteMinimum">
+            <span>Minimum:</span><span ng-bind="model.minimum"></span>
+        </div>
+        <div class="stat" ng-show="model.settings.showVoteMaximum">
+            <span>Maximum:</span><span ng-bind="model.maximum"></span>
+        </div>
+        <div class="stat">
+            <span>Votes Counted:</span><span ng-bind="model.votesCounted"></span>
+        </div>
+    </div>
 
-            <div style="text-align: center; width: 400px; margin: auto;" ng-show="model.users.length > 0">
-                <button ng-click='reset()' style="width: 200px; height: 60px; margin: 20px; zfont-weight: bold; font-size: 1.5em;">Reset</button>
-            </div>
-
+    <div class="footer">
+        <div class="tools">
+            <a href="#" ng-click="newSession()">New Session</a>
         </div>
 
-        <script src="/socket.io/socket.io.js"></script>
-        <script src="dist/js/vendor.min.js"></script>
-        <script src="dist/js/app.min.js"></script>
+        <div class="qrcode">
+            <a style="text-decoration: none; color: white; letter-spacing: 3pt;" href="{{model.joinUrl}}" target="_blank"><span class="sessionid" ng-bind="model.sid"></span></a><br />
+            <img ng-src="{{model.qrcodeUrl}}" ng-click="showConnectCode()">
+        </div>
 
-        <script language="javascript">
-            var doc = document.documentElement;
-            doc.setAttribute('data-useragent', navigator.userAgent);
-        </script>
+        <div style="text-align: center; width: 400px; margin: auto;" ng-show="model.users.length > 0">
+            <button ng-click='reset()' style="width: 200px; height: 60px; margin: 20px; zfont-weight: bold; font-size: 1.5em;">Reset</button>
+        </div>
 
-    </body>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="dist/js/vendor.min.js"></script>
+    <script src="dist/js/app.min.js"></script>
+
+    <script language="javascript">
+        var doc = document.documentElement;
+        doc.setAttribute('data-useragent', navigator.userAgent);
+    </script>
+
+</body>
+
 </html>

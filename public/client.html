@@ -15,25 +15,6 @@
                 background: white;
             }
 
-            * {
-                -webkit-appearance: none;
-                -webkit-border-radius: 0;
-            }
-
-            button {
-             border: 1px solid #CCC;
-             border-radius: 6px;
-             background: rgb(255,255,255); /* Old browsers */
-             background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(241,241,241,1) 50%, rgba(225,225,225,1) 51%, rgba(246,246,246,1) 100%); /* FF3.6+ */
-             background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,1)), color-stop(50%,rgba(241,241,241,1)), color-stop(51%,rgba(225,225,225,1)), color-stop(100%,rgba(246,246,246,1))); /* Chrome,Safari4+ */
-             background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(241,241,241,1) 50%,rgba(225,225,225,1) 51%,rgba(246,246,246,1) 100%); /* Chrome10+,Safari5.1+ */
-             background: -o-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(241,241,241,1) 50%,rgba(225,225,225,1) 51%,rgba(246,246,246,1) 100%); /* Opera 11.10+ */
-             background: -ms-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(241,241,241,1) 50%,rgba(225,225,225,1) 51%,rgba(246,246,246,1) 100%); /* IE10+ */
-             background: linear-gradient(to bottom, rgba(255,255,255,1) 0%,rgba(241,241,241,1) 50%,rgba(225,225,225,1) 51%,rgba(246,246,246,1) 100%); /* W3C */
-             filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f6f6f6',GradientType=0 ); /* IE6-9 */
-             color: #222;
-            }
-
 
             button.selected {
              border: 1px solid #CCC;
@@ -107,10 +88,12 @@
             <img ng-src="{{model.qrcodeUrl}}" style="margin: 5%; width: 90%;" ng-click="showConnectCode()">
         </div>
 
-        <div ng-show="model.showSettings" style="position: fixed; border: 1px solid black; background: white; width: 80%; left: 10%;">
+        <div ng-show="model.showSettings" class="settings-popup">
             <div style="padding: 20px;">
-                <input type="text" ng-model="model.newUsername">
+                Name <input type="text" maxlength="25" ng-model="model.newUsername" placeholder="Name">
                 <br/>
+                <label><input type="checkbox" ng-model="model.settings.showVoteSelection"> Show Vote Selection</label>
+                <br />
                 <button ng-click='saveSettings()' style="margin: 20px; padding: 10px;">Save</button>
                 <button ng-click='cancelSettings()' style="margin: 20px; padding: 10px;">Cancel</button>
 
@@ -121,8 +104,8 @@
         </div>
 
         <div ng-show="model.isLoggedIn()">
-            <span ng-repeat="value in [0,0.5,1,2,3,5,8,13,20,'?']">
-                <button class="point-button" ng-click="vote(value)" ng-class="{selected: model.vote == value}">{{value}}</button>
+            <span ng-repeat="value in model.serverSettings.cardNumbers">
+                <button class="point-button" ng-click="vote(value)" ng-class="{selected: model.vote == value && model.settings.showVoteSelection}">{{value}}</button>
             </span>
 
             <span ng-repeat="value in [999]">
