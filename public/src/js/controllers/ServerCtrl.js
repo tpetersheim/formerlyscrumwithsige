@@ -40,6 +40,7 @@ angular.module('ScrumWithSige').controller('ServerCtrl', ['$scope', '$location',
             showVoteMinimum: true,
             showVoteMaximum: true,
             showVoteSeparation: true,
+            showVoteSeparationThresholdCompromised: true,
             voteSeparationThreshold: 2,
             cardNumbersString: "",
             cardNumbers: [0, 0.5, 1, 2, 3, 5, 8, 13, 20, '?']
@@ -67,7 +68,6 @@ angular.module('ScrumWithSige').controller('ServerCtrl', ['$scope', '$location',
     };
 
     $scope.saveSettings = function () {
-        //TODO: Save to cookie or local storage
         var cardNumbers = model.settings.cardNumbersString.replace(/ /g, '').split(",");
         if (cardNumbers.length > 0 && model.settings.cardNumbers != cardNumbers) {
             model.settings.cardNumbers = cardNumbers;
@@ -78,16 +78,19 @@ angular.module('ScrumWithSige').controller('ServerCtrl', ['$scope', '$location',
     };
 
     $scope.updateServerSettings = function () {
-        socket.emit('updateSettings', {
+        socket.emit('updateSettings', createSettingsObject());
+    };
+
+    function createSettingsObject() {
+        return {
             'cardNumbers': model.settings.cardNumbers
-        });
+        };
     }
 
     $scope.loadSettings = function () {
         model.settings = $cookieStore.get('host-settings') || model.settings;
     };
     $scope.loadSettings();
-    $scope.updateServerSettings();
 
     $scope.writeSettings = function () {
         $cookieStore.put('host-settings', model.settings);
@@ -97,7 +100,7 @@ angular.module('ScrumWithSige').controller('ServerCtrl', ['$scope', '$location',
         var s = model.settings;
         return model.allIn &&
             (s.showVoteAverage || s.showVoteMaximum || s.showVoteMinimum || s.showVoteSeparation);
-    }
+    };
 
     $scope.getCardContainerStyle = function() {
         return {'width': (model.users.length * 200) + 'px'};
@@ -105,14 +108,14 @@ angular.module('ScrumWithSige').controller('ServerCtrl', ['$scope', '$location',
     
     $scope.getVoteSeparationStyle = function () {
         var style = {};
-        if (model.settings.voteSeparationThreshold > 0 && model.separation > model.settings.voteSeparationThreshold) {
+        if (model.settings.showVoteSeparationThresholdCompromised && model.separation > model.settings.voteSeparationThreshold) {
             style = {'color': 'red'};
         }
         return style;
     }
 
     socket.on('connect', function(){
-        socket.emit('bindHost', {sid: model.sid});
+        socket.emit('bindHost', {sid: model.sid, 'settings': createSettingsObject()});
     });
 
     socket.on('reset', function(mode) {
@@ -203,13 +206,11 @@ angular.module('ScrumWithSige').controller('ServerCtrl', ['$scope', '$location',
     };
 
     $scope.updateVoteMinimum = function () {
-        model.minimum = getNumericUserVotes()
-            .Min();
+        model.minimum = getNumericUserVotes().Count() > 0 ? getNumericUserVotes().Min() : 0;
     };
 
     $scope.updateVoteMaximum = function () {
-        model.maximum = getNumericUserVotes()
-            .Max();
+        model.maximum = getNumericUserVotes().Count() > 0 ? getNumericUserVotes().Max() : 0;
     };
 
     $scope.updateVotesCounted = function () {

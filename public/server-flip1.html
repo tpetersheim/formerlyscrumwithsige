@@ -213,9 +213,10 @@
                 <input type="checkbox" ng-model="model.settings.showVoteSeparation"> Show Vote Separation
                 <br />
                 <span style="margin-left: 25px;">
-                    Threshold <input type="number" min="-1" ng-disabled="!model.settings.showVoteSeparation" ng-model="model.settings.voteSeparationThreshold"> (Set -1 to ignore)
+                    <input type="checkbox" ng-disabled="!model.settings.showVoteSeparation"  ng-model="model.settings.showVoteSeparationThresholdCompromised"> Compromised Indicator &nbsp; &nbsp;
+                    Threshold <input type="number" min="-1" ng-disabled="!model.settings.showVoteSeparation" ng-model="model.settings.voteSeparationThreshold" style="width:50px;">
                 </span>
-                
+
                 <br />
                 <input type="checkbox" ng-model="model.settings.showVoteMinimum"> Show Vote Minimum
                 <br />

@@ -55,6 +55,7 @@ io.sockets.on('connection', function (socket) {
         socket.sid = data.sid;
         socket.uid = "HOST";
         socket.join(data.sid);
+        hostSettings[socket.sid] = data.settings;
 
         if (!(data.sid in sessions)) {
             console.log("creating new session: " + data.sid);
@@ -107,7 +108,7 @@ io.sockets.on('connection', function (socket) {
         console.log(u);
         u.socket = socket;
 
-        socket.emit('loggedIn', hostSettings);
+        socket.emit('loggedIn', hostSettings[socket.sid]);
         sendDumpToHost(data.sid);
     });
 
@@ -180,7 +181,7 @@ io.sockets.on('connection', function (socket) {
         console.log(" ================================================");
         console.log("updateSettings: " + JSON.stringify(settings));
         
-        hostSettings = settings;
+        hostSettings[socket.sid] = settings;
         if (sessions[socket.sid]) {
             io.sockets.in(socket.sid).emit('updateSettings', settings);
             sendDumpToHost(socket.sid);
