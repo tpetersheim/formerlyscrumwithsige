@@ -43,17 +43,6 @@ angular.module('ScrumWithSige').factory('tools', ['$rootScope', '$location', fun
             var url = window.location.protocol + "//" + window.location.host;
             url += "/join?session=" + uuid;
             return url;
-        },
-
-        findAverage: function (numArray, numDecimalPlaces) {
-            numDecimalPlaces = typeof numDecimalPlaces !== "undefined" ? numDecimalPlaces : 0;
-            var total = 0;
-            for (var i = 0; i < numArray.length; i++) {
-                total += numArray[i];
-            }
-            var avg = total / numArray.length;
-            console.log(avg);
-            return avg.toFixed(numDecimalPlaces);
         }
     };
 

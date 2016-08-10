@@ -1,5 +1,5 @@
 angular.module('ScrumWithSige').factory('socket', ['$rootScope', '$location', function ($rootScope, $location) {
-    console.log($location);
+    //console.log($location);
     var socketUrl = $location.protocol() + "://" + $location.host();
     var socket = io.connect(socketUrl);
 
@@ -13,8 +13,8 @@ angular.module('ScrumWithSige').factory('socket', ['$rootScope', '$location', fu
         on: function (eventName, callback) {
             socket.on(eventName, function () {
                 var args = arguments;
-                console.log(eventName);
-                console.log(arguments);
+                //console.log(eventName);
+                //console.log(arguments);
                 $rootScope.$apply(function () {
                     callback.apply(socket, args);
                 });
