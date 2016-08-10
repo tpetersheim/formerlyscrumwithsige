@@ -43,7 +43,9 @@ angular.module('ScrumWithSige').controller('ServerCtrl', ['$scope', '$location',
             showVoteSeparationThresholdCompromised: true,
             voteSeparationThreshold: 2,
             cardNumbersString: "",
-            cardNumbers: [0, 0.5, 1, 2, 3, 5, 8, 13, 20, '?']
+            cardNumbers: [0, 0.5, 1, 2, 3, 5, 8, 13, 20, '?'],
+            backgroundImage: "images/fasttrack.jpg",
+            sharedHtml: ""
         }
     };
     model.settings.cardNumbersString = model.settings.cardNumbers.join(', ');
@@ -71,8 +73,8 @@ angular.module('ScrumWithSige').controller('ServerCtrl', ['$scope', '$location',
         var cardNumbers = model.settings.cardNumbersString.replace(/ /g, '').split(",");
         if (cardNumbers.length > 0 && model.settings.cardNumbers != cardNumbers) {
             model.settings.cardNumbers = cardNumbers;
-            $scope.updateServerSettings();
         }
+        $scope.updateServerSettings();
         $scope.writeSettings();
         model.showSettings = false;
     };
@@ -83,7 +85,9 @@ angular.module('ScrumWithSige').controller('ServerCtrl', ['$scope', '$location',
 
     function createSettingsObject() {
         return {
-            'cardNumbers': model.settings.cardNumbers
+            'cardNumbers': model.settings.cardNumbers,
+            'sharedHtml': model.settings.sharedHtml,
+            'backgroundImage': model.settings.backgroundImage
         };
     }
 
@@ -109,10 +113,20 @@ angular.module('ScrumWithSige').controller('ServerCtrl', ['$scope', '$location',
     $scope.getVoteSeparationStyle = function () {
         var style = {};
         if (model.settings.showVoteSeparationThresholdCompromised && model.separation > model.settings.voteSeparationThreshold) {
-            style = {'color': 'red'};
+            style = { 'color': 'red' };
         }
         return style;
-    }
+    };
+
+    $scope.getBodyBackgroundStyle = function () {
+        var style = {};
+        if (model.settings.backgroundImage) {
+            style = {
+                'background-image': 'url(' + model.settings.backgroundImage + ')'
+            };
+        }
+        return style;
+    };
 
     socket.on('connect', function(){
         socket.emit('bindHost', {sid: model.sid, 'settings': createSettingsObject()});
@@ -189,15 +203,19 @@ angular.module('ScrumWithSige').controller('ServerCtrl', ['$scope', '$location',
     });
 
     $scope.updateVoteAverage = function () {
-        model.average = getNumericUserVotes()
-            .Average()
-            .toFixed(parseInt(model.settings.voteAverageNumDecimals));
+        if (getNumericUserVotes().Count() > 0) {
+            model.average = getNumericUserVotes()
+                .Average()
+                .toFixed(parseInt(model.settings.voteAverageNumDecimals));
+        } else {
+            model.average = 0;
+        }
     };
 
     $scope.updateVoteSeparation = function () {
         var sortedCardNumbers = Enumerable.From(model.settings.cardNumbers)
-            .Select(function (n) { return parseFloat(n) })
-            .Where(function (n) { return !isNaN(n) })
+            .Select(function (n) { return parseFloat(n); })
+            .Where(function (n) { return !isNaN(n); })
             .ToArray().sort(function (a, b) { return a - b; });
         var voteIndexes = getNumericUserVotes().Select(function (v) {
             return sortedCardNumbers.indexOf(v);
@@ -215,12 +233,12 @@ angular.module('ScrumWithSige').controller('ServerCtrl', ['$scope', '$location',
 
     $scope.updateVotesCounted = function () {
         model.votesCounted = getNumericUserVotes().Count();
-    }
+    };
 
     function getNumericUserVotes() {
         return Enumerable.From(model.users)
-            .Select(function (u) { return parseFloat(u.vote) })
-            .Where(function (n) { return !isNaN(n) && n != 999 });
+            .Select(function (u) { return parseFloat(u.vote); })
+            .Where(function (n) { return !isNaN(n) && n != 999; });
     }
 
 }]);

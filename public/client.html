@@ -55,6 +55,7 @@
                 background-image: url(./images/coffee.png);
                 background-repeat: no-repeat;
                 background-position: center;
+                background-color: white;
             }
 
             .zheader {
@@ -68,60 +69,90 @@
             .ng-cloak {
                 display: none;
             }
+
+            .shared-html {
+                margin-top: 100px;
+            }
         </style>
     </head>
-    <body class="ng-cloak">
+<body class="ng-cloak" ng-style="getBodyBackgroundStyle()">
 
-        <div class="zheader">
-            <div style="float: left; text-transform: uppercase; width: 33%; text-align: left; font-weight: bold;"><img style="vertical-align: text-top;" ng-src="images/{{connectedIcon()}}" />{{model.sid}}</div>
-            <div style="float: right; width: 33%; text-align: right;">{{model.username}}&nbsp;<img src="images/gear2.png" style="vertical-align: text-top; opacity: .6;" ng-click="showSettings()" /></div>
-            <div style="font-weight: bold;">scrum<span style="color: #FFEFCC;">with</span>sige</div>
+    <div class="zheader">
+        <div style="float: left; text-transform: uppercase; width: 33%; text-align: left; font-weight: bold;"><img style="vertical-align: text-top;" ng-src="images/{{connectedIcon()}}" />{{model.sid}}</div>
+        <div style="float: right; width: 33%; text-align: right;">
+            <span ng-click="showNameChange()" title="Change name" style="cursor: pointer;">{{model.username}}</span>&nbsp;
+            <img src="images/gear2.png" style="vertical-align: text-top; opacity: .6;cursor: pointer;" ng-click="model.showSettings = true" title="Change settings" />
         </div>
+        <div style="font-weight: bold;">scrum<span style="color: #FFEFCC;">with</span>sige</div>
+    </div>
 
-        <div ng-show="!model.isLoggedIn()" style="padding: 20px;">
-            <input type="text" ng-model="model.newUsername" placeholder="Name">
-            <br/>
-            <button ng-disabled="model.newUsername.length < 3" ng-click='join()' style="margin: 20px; padding: 10px;">Join</button>
+    <div ng-show="!model.isLoggedIn()" style="padding: 20px;">
+        <input type="text" ng-model="model.newUsername" placeholder="Name">
+        <br />
+        <button ng-disabled="model.newUsername.length < 3" ng-click='join()' style="margin: 20px; padding: 10px;">Join</button>
+    </div>
+
+    <div ng-show="model.showConnectCode" style="position: fixed; bottom: 55px; border: 1px solid black; background: white; width: 90%; left: 5%;">
+        <img ng-src="{{model.qrcodeUrl}}" style="margin: 5%; width: 90%;" ng-click="showConnectCode()">
+    </div>
+
+    <div ng-show="model.showNameChange" class="settings-popup">
+        <div style="padding: 20px;">
+            <input type="text" maxlength="25" ng-model="model.newUsername" placeholder="Name">
+            <br />
+            <button ng-click='saveNameChange()' style="margin: 20px; padding: 10px;">Save</button>
+            <button ng-click='model.showNameChange = false' style="margin: 20px; padding: 10px;">Cancel</button>
+
+            <hr />
+            <b>Debug Info</b><br />
+            Transport: {{model.transport}}<br />
         </div>
+    </div>
 
-        <div ng-show="model.showConnectCode" style="position: fixed; bottom: 55px; border: 1px solid black; background: white; width: 90%; left: 5%;">
-            <img ng-src="{{model.qrcodeUrl}}" style="margin: 5%; width: 90%;" ng-click="showConnectCode()">
-        </div>
-
-        <div ng-show="model.showSettings" class="settings-popup">
-            <div style="padding: 20px;">
-                Name <input type="text" maxlength="25" ng-model="model.newUsername" placeholder="Name">
-                <br/>
+    <div ng-show="model.showSettings" class="settings-popup">
+        <div style="padding: 20px;">
+            <div style="text-align: left;width: 250px;margin: auto;">
                 <label><input type="checkbox" ng-model="model.settings.showVoteSelection"> Show Vote Selection</label>
                 <br />
-                <button ng-click='saveSettings()' style="margin: 20px; padding: 10px;">Save</button>
-                <button ng-click='cancelSettings()' style="margin: 20px; padding: 10px;">Cancel</button>
-
-                <hr/>
-                <b>Debug Info</b><br/>
-                Transport: {{model.transport}}<br/>
+                <input type="checkbox" ng-model="model.settings.showBackgroundImage" ng-change="showBackgroundChange()"> Show Background Image
+                <br />
+                <span style="margin-left: 25px;">
+                    URL <input type="text" ng-disabled="!model.settings.showBackgroundImage" ng-model="model.settings.backgroundImage">
+                </span>
+                <br />
+                <label><input type="checkbox" ng-model="model.settings.showHostBackgroundImage" ng-change="showHostBackgroundChange()"> Show Host's Background Image</label>
+                <br />
+                <label><input type="checkbox" ng-model="model.settings.showSharedHtml"> Show Host's Shared HTML</label>
+                <br />
             </div>
+            <button ng-click='saveSettings()' style="margin: 20px; padding: 10px;">Close</button>
+        </div>
+    </div>
+
+    <div ng-show="model.isLoggedIn()">
+        <span ng-repeat="value in model.hostSettings.cardNumbers">
+            <button class="point-button" ng-click="vote(value)" ng-class="{selected: model.vote == value && model.settings.showVoteSelection}">{{value}}</button>
+        </span>
+
+        <span ng-repeat="value in [999]">
+            <button class="point-button-withimage" ng-click="vote(value)" ng-class="{selectedwithimage: model.vote == value}">&nbsp;</button>
+        </span>
+
+        <div class="shared-html">
+            <div ng-bind-html="getSharedHtml()" ng-if="model.settings.showSharedHtml"></div>
         </div>
 
-        <div ng-show="model.isLoggedIn()">
-            <span ng-repeat="value in model.serverSettings.cardNumbers">
-                <button class="point-button" ng-click="vote(value)" ng-class="{selected: model.vote == value && model.settings.showVoteSelection}">{{value}}</button>
-            </span>
-
-            <span ng-repeat="value in [999]">
-                <button class="point-button-withimage" ng-click="vote(value)" ng-class="{selectedwithimage: model.vote == value}">&nbsp;</button>
-            </span>
-            <div style="background-color: lightgrey; position: fixed; bottom: 0; height: 50px; width: 100%;">
-                <button ng-click='reset()' style="margin: 10px; height: 30px; float: left;">Reset All</button>
-                <img ng-src="{{model.qrcodeUrl}}" style="margin: 10px; height: 30px;" ng-click="showConnectCode()">
-                <button ng-click='leave()' style="margin: 10px; height: 30px; float: right;">Leave</button>
-            </div>
-
+        <div style="background-color: lightgrey; position: fixed; bottom: 0; height: 50px; width: 100%;">
+            <button ng-click='reset()' style="margin: 10px; height: 30px; float: left;">Reset All</button>
+            <img ng-src="{{model.qrcodeUrl}}" style="margin: 10px; height: 30px;" ng-click="showConnectCode()">
+            <button ng-click='leave()' style="margin: 10px; height: 30px; float: right;">Leave</button>
         </div>
 
-        <script src="/socket.io/socket.io.js"></script>
-        <script src="dist/js/vendor.min.js"></script>
-        <script src="dist/js/app.min.js"></script>
+    </div>
 
-    </body>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="dist/js/vendor.min.js"></script>
+    <script src="dist/js/app.min.js"></script>
+
+</body>
 </html>

@@ -8,10 +8,9 @@
         <style>
 
             body {
-	background-color: rgba(255,255,255,0.40);
-	background-image: url(images/fasttrack.jpg);
-	background-position: center top;
-	background-repeat: no-repeat;
+	            background-color: rgba(255,255,255,0.40);
+	            background-position: center top;
+	            background-repeat: no-repeat;
             }
 
             .card-container {
@@ -185,12 +184,12 @@
 
 
     </head>
-<body class="ng-cloak">
+<body class="ng-cloak" ng-style="getBodyBackgroundStyle()">
 
     <div class="header">
         <div class="right">
             <div class="app-version" ng-bind="appVersion"></div>
-            <img src="images/gear2.png" style="opacity: .6;" ng-click="showSettings()" />
+            <img src="images/gear2.png" style="opacity: .6; cursor: pointer;" ng-click="showSettings()" title="Change settings" />
         </div>
         <h2 style="text-align: center; margin: 4px;"> scrum<span style="color: #FFEFCC;">with</span>sige.azurewebsites.net</h2>
     </div>
@@ -204,25 +203,31 @@
     <div ng-show="model.showSettings" class="settings-popup">
         <div style="padding: 20px;">
             <div style="text-align: left;width: 410px;margin: auto;">
-                <input type="checkbox" ng-model="model.settings.showVoteAverage"> Show Vote Average
+                <label><input type="checkbox" ng-model="model.settings.showVoteAverage"> Show Vote Average</label>
                 <br />
                 <span style="margin-left: 25px;">
                     Number of Decimal Places <input type="number" max="2" min="0" ng-disabled="!model.settings.showVoteAverage" ng-model="model.settings.voteAverageNumDecimals">
                 </span>
                 <br />
-                <input type="checkbox" ng-model="model.settings.showVoteSeparation"> Show Vote Separation
+                <label><input type="checkbox" ng-model="model.settings.showVoteSeparation"> Show Vote Separation</label>
                 <br />
                 <span style="margin-left: 25px;">
-                    <input type="checkbox" ng-disabled="!model.settings.showVoteSeparation"  ng-model="model.settings.showVoteSeparationThresholdCompromised"> Compromised Indicator &nbsp; &nbsp;
+                    <label><input type="checkbox" ng-disabled="!model.settings.showVoteSeparation" ng-model="model.settings.showVoteSeparationThresholdCompromised"> Compromised Indicator</label> &nbsp; &nbsp;
                     Threshold <input type="number" min="-1" ng-disabled="!model.settings.showVoteSeparation" ng-model="model.settings.voteSeparationThreshold" style="width:50px;">
                 </span>
 
                 <br />
-                <input type="checkbox" ng-model="model.settings.showVoteMinimum"> Show Vote Minimum
+                <label><input type="checkbox" ng-model="model.settings.showVoteMinimum"> Show Vote Minimum</label>
                 <br />
-                <input type="checkbox" ng-model="model.settings.showVoteMaximum"> Show Vote Maximum
+                <label><input type="checkbox" ng-model="model.settings.showVoteMaximum"> Show Vote Maximum</label>
                 <br />
                 Card Numbers <input type="text" ng-model="model.settings.cardNumbersString" style="width: 200px;" />
+                <br />
+                Background Image URL <input type="text" ng-model="model.settings.backgroundImage" style="width: 240px;" />
+                <br /><br />
+                Shared HTML
+                <br />
+                <textarea ng-model="model.settings.sharedHtml" style="width: 400px; height: 300px;"></textarea>
             </div>
             <br />
             <button ng-click='saveSettings()' style="margin: 20px; padding: 10px;">Save</button>

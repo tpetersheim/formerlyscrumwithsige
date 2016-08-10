@@ -2,7 +2,7 @@
  * Created by Nick Largent on 5/19/14.
  */
 
-angular.module('ScrumWithSige').controller('ClientCtrl', ['$scope', '$location', '$cookieStore', 'socket', 'tools', function ($scope, $location, $cookieStore, socket, tools) {
+angular.module('ScrumWithSige').controller('ClientCtrl', ['$scope', '$location', '$cookieStore', '$sce', 'socket', 'tools', function ($scope, $location, $cookieStore, $sce, socket, tools) {
 
     var getUser = function() {
         var uid = $cookieStore.get('uid');
@@ -23,6 +23,7 @@ angular.module('ScrumWithSige').controller('ClientCtrl', ['$scope', '$location',
         sid: sid,
         qrcodeUrl: '/qrcode?size=100&url=' + encodeURIComponent(tools.buildJoinUrl(sid)),
         showSettings: false,
+        showNameChange: false,
         showConnectCode: false,
         newUsername: '',
         connected: false,
@@ -34,10 +35,16 @@ angular.module('ScrumWithSige').controller('ClientCtrl', ['$scope', '$location',
         },
         vote: -1,
         settings: {
-            showVoteSelection: true
+            showVoteSelection: true,
+            showSharedHtml: true,
+            showBackgroundImage: false,
+            backgroundImage: "",
+            showHostBackgroundImage: false
         },
-        serverSettings: {
-            cardNumbers: []
+        hostSettings: {
+            cardNumbers: [],
+            sharedHtml: "",
+            backgroundImage: ""
         }
     };
     $scope.model = model;
@@ -50,23 +57,14 @@ angular.module('ScrumWithSige').controller('ClientCtrl', ['$scope', '$location',
         socket.emit('vote', value);
     };
 
-    $scope.showSettings = function() {
-        model.newUsername = model.username;
-        model.showSettings = true;
-    };
 
     $scope.showConnectCode = function() {
         model.showConnectCode = !model.showConnectCode;
     };
 
     $scope.saveSettings = function () {
-        $scope.join();
         model.showSettings = false;
        $scope.writeSettings();
-    };
-
-    $scope.cancelSettings = function() {
-        model.showSettings = false;
     };
 
     $scope.loadSettings = function () {
@@ -76,6 +74,50 @@ angular.module('ScrumWithSige').controller('ClientCtrl', ['$scope', '$location',
 
     $scope.writeSettings = function () {
         $cookieStore.put('client-settings', model.settings);
+    };
+
+    $scope.getSharedHtml = function () {
+        return $sce.trustAsHtml(model.hostSettings.sharedHtml);
+    };
+
+    $scope.showNameChange = function () {
+        model.newUsername = model.username;
+        model.showNameChange = true;
+    };
+
+    $scope.saveNameChange = function () {
+        $scope.join();
+        model.showNameChange = false;
+    };
+
+    $scope.getBodyBackgroundStyle = function () {
+        var style = {};
+        var imageUrl = "";
+        if (model.settings.showBackgroundImage) {
+            imageUrl = model.settings.backgroundImage;
+        } else if (model.settings.showHostBackgroundImage) {
+            imageUrl = model.hostSettings.backgroundImage;
+        }
+
+        if (imageUrl) {
+            style = {
+                'background-image': 'url(' + imageUrl + ')'
+            };
+        }
+
+        return style;
+    };
+
+    $scope.showHostBackgroundChange = function () {
+        if (model.settings.showHostBackgroundImage) {
+            model.settings.showBackgroundImage = false;
+        }
+    };
+
+    $scope.showBackgroundChange = function () {
+        if (model.settings.showBackgroundImage) {
+            model.settings.showHostBackgroundImage = false;
+        }
     };
 
     socket.on('connect', function(){
@@ -98,7 +140,7 @@ angular.module('ScrumWithSige').controller('ClientCtrl', ['$scope', '$location',
 
     socket.on('loggedIn', function(hostSettings) {
         model.loggedIn = true;
-        model.serverSettings = hostSettings;
+        model.hostSettings = hostSettings;
     });
 
     socket.on('reset', function(mode) {
@@ -110,8 +152,8 @@ angular.module('ScrumWithSige').controller('ClientCtrl', ['$scope', '$location',
     };
 
     socket.on('updateSettings', function (hostSettings) {
-        model.serverSettings = hostSettings;
-    })
+        model.hostSettings = hostSettings;
+    });
 
     $scope.leave = function() {
         socket.emit("leave");

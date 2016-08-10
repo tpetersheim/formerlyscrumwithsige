@@ -75,6 +75,10 @@ body {
     text-align: center;
 }
 
+.settings-popup input {
+    margin-top: 4px;
+}
+
 .clearfix {
     overflow: auto;
     zoom: 1;
