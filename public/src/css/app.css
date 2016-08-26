@@ -70,9 +70,11 @@ body {
     z-index: 10;
     border: 1px solid black;
     background: white;
-    width: 80%;
+    width: 70%;
     left: 10%;
     text-align: center;
+    max-height: 70%;
+    overflow-y: scroll;
 }
 
 .settings-popup input {

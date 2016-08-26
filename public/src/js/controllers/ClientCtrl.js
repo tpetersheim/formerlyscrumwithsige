@@ -107,6 +107,14 @@ angular.module('ScrumWithSige').controller('ClientCtrl', ['$scope', '$location',
 
         return style;
     };
+    
+    $scope.getCardValue = function (value) {
+        var cardValue = value;
+        if (value.indexOf('fa') > -1) {
+            cardValue = '<i class="fa ' + value + '"></i>';
+        }
+        return $sce.trustAsHtml(cardValue);
+    }
 
     $scope.showHostBackgroundChange = function () {
         if (model.settings.showHostBackgroundImage) {

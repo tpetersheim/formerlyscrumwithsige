@@ -4,6 +4,7 @@
         <title ng-bind="appName"></title>
 
         <link rel="stylesheet" type="text/css" href="dist/css/app.css" />
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
         <style>
 
@@ -110,7 +111,6 @@
             }
 
 
-
             .qrcode {
                 text-align: center;
                 float: right;
@@ -154,6 +154,26 @@
                 right: 0;
                 position: absolute;
                 font-size: 8pt;
+            }
+
+            .orig-vote {
+                position: absolute;
+                color: lightgray;
+                font-weight: normal;
+                text-decoration: line-through;
+                font-size: .5em;
+                top: -90px;
+                left: 10px;
+            }
+
+            .fa {
+                position: relative;
+                line-height: 0;
+            }
+
+            .fa.big {
+                top: 15px;
+                font-size: 2em;
             }
         </style>
 
@@ -247,13 +267,12 @@
         <div ng-repeat="user in model.users" class="card-container flip">
             <div class="card-name" ng-class="{'disconnected': !user.connected}">{{user.username}} <a href="#" ng-click="kick(user)"><img src="images/close.gif" border="0" /></a></div>
             <div class="card2" ng-class="{'flipped': model.allIn, 'unknown': user.vote == null}">
-                <div class="face front">
-                </div>
+                <div class="face front"></div>
                 <div class="face back">
-                    <span ng-show="user.vote != -1 && user.vote == user.orgVote && user.vote != 999">{{user.vote}}</span>
-                    <span ng-show="user.vote != -1 && user.orgVote == 999 && user.vote != 999">{{user.vote}}</span>
-                    <span ng-show="user.vote == 999"><img style="padding-top: 50px;" src="images/coffee-large.png" alt="Coffee" /></span>
-                    <span ng-show="user.vote != -1 && user.vote != user.orgVote && user.vote != 999 && user.orgVote != 999"><span style="position: absolute; color: lightgray; font-weight: normal; text-decoration: line-through; font-size: .5em; top: -90px; left: 10px;">{{user.orgVote}}</span>{{user.vote}}</span>
+                   <span ng-show="user.vote != -1">
+                        <span class="orig-vote" ng-show="user.vote != user.orgVote" ng-bind-html="getCardValue(user.orgVote)"></span>
+                        <span ng-bind-html="getCardValue(user.vote, true)"></span>
+                    </span>
                 </div>
             </div>
         </div>

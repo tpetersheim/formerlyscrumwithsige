@@ -3,7 +3,7 @@
  * Created by Nick Largent on 5/19/14.
  */
 
-angular.module('ScrumWithSige').controller('ServerCtrl', ['$scope', '$location', '$timeout', '$cookieStore', 'socket', 'tools', function ($scope, $location, $timeout, $cookieStore, socket, tools) {
+angular.module('ScrumWithSige').controller('ServerCtrl', ['$scope', '$location', '$timeout', '$cookieStore', '$sce', 'socket', 'tools', function ($scope, $location, $timeout, $cookieStore, $sce, socket, tools) {
 
     $scope.newSession = function() {
         sid = tools.generateSessionId();
@@ -106,6 +106,16 @@ angular.module('ScrumWithSige').controller('ServerCtrl', ['$scope', '$location',
             (s.showVoteAverage || s.showVoteMaximum || s.showVoteMinimum || s.showVoteSeparation);
     };
 
+    $scope.getCardValue = function (value, bigIcon) {
+        bigIcon = typeof bigIcon === 'undefined' ? false : bigIcon;
+        var cardValue = value;
+        if (value != null && value.indexOf('fa') > -1) {
+            var faBigClass = bigIcon ? " big" : "";
+            cardValue = '<i class="fa ' + value + faBigClass + '"></i>';
+        }
+        return $sce.trustAsHtml(cardValue);
+    }
+
     $scope.getCardContainerStyle = function() {
         return {'width': (model.users.length * 200) + 'px'};
     };
@@ -203,13 +213,24 @@ angular.module('ScrumWithSige').controller('ServerCtrl', ['$scope', '$location',
     });
 
     $scope.updateVoteAverage = function () {
+        var avg;
         if (getNumericUserVotes().Count() > 0) {
-            model.average = getNumericUserVotes()
-                .Average()
-                .toFixed(parseInt(model.settings.voteAverageNumDecimals));
+            avg = getNumericUserVotes().Average();
+
+            // Special case to handle .5
+            if (getNumericUserVotes().Contains(.5)) {
+                if (avg >= .25 && avg <= .5) {
+                    avg = .5;
+                } else {
+                    var numDecimals = parseInt(model.settings.voteAverageNumDecimals);
+                    avg = avg.toFixed(numDecimals);
+                }
+            }
         } else {
-            model.average = 0;
+            avg = 0;
         }
+
+        model.average = avg;
     };
 
     $scope.updateVoteSeparation = function () {
