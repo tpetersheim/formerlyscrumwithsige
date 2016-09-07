@@ -68,12 +68,12 @@ angular.module('ScrumWithSige').controller('ClientCtrl', ['$scope', '$location',
     };
 
     $scope.loadSettings = function () {
-        model.settings = $cookieStore.get('client-settings') || model.settings;
+        model.settings = JSON.parse(localStorage.getItem('clientSettings')) || model.settings;
     };
     $scope.loadSettings();
 
     $scope.writeSettings = function () {
-        $cookieStore.put('client-settings', model.settings);
+        localStorage.setItem('clientSettings', JSON.stringify(model.settings));
     };
 
     $scope.getSharedHtml = function () {
@@ -101,20 +101,17 @@ angular.module('ScrumWithSige').controller('ClientCtrl', ['$scope', '$location',
 
         if (imageUrl) {
             style = {
-                'background-image': 'url(' + imageUrl + ')'
+                'background-image': 'url(' + imageUrl + ')',
+                'background-size': 'cover'
             };
         }
 
         return style;
     };
-    
+
     $scope.getCardValue = function (value) {
-        var cardValue = value;
-        if (value.indexOf('fa') > -1) {
-            cardValue = '<i class="fa ' + value + '"></i>';
-        }
-        return $sce.trustAsHtml(cardValue);
-    }
+        return tools.getCardValue(value, false);
+    };
 
     $scope.showHostBackgroundChange = function () {
         if (model.settings.showHostBackgroundImage) {

@@ -3,7 +3,7 @@
  * Created by Nick Largent on 5/19/14.
  */
 
-angular.module('ScrumWithSige').controller('ServerCtrl', ['$scope', '$location', '$timeout', '$cookieStore', '$sce', 'socket', 'tools', function ($scope, $location, $timeout, $cookieStore, $sce, socket, tools) {
+angular.module('ScrumWithSige').controller('ServerCtrl', ['$scope', '$location', '$timeout', '$sce', 'socket', 'tools', function ($scope, $location, $timeout, $sce, socket, tools) {
 
     $scope.newSession = function() {
         sid = tools.generateSessionId();
@@ -43,7 +43,7 @@ angular.module('ScrumWithSige').controller('ServerCtrl', ['$scope', '$location',
             showVoteSeparationThresholdCompromised: true,
             voteSeparationThreshold: 2,
             cardNumbersString: "",
-            cardNumbers: [0, 0.5, 1, 2, 3, 5, 8, 13, 20, '?'],
+            cardNumbers: ["0", "0.5", "1", "2", "3", "5", "8", "13", "20", '?'],
             backgroundImage: "images/fasttrack.jpg",
             sharedHtml: ""
         }
@@ -63,21 +63,24 @@ angular.module('ScrumWithSige').controller('ServerCtrl', ['$scope', '$location',
         model.showConnectCode = !model.showConnectCode;
     };
 
-    var oldCardNumbers;
     $scope.showSettings = function () {
-        oldCardNumbers = model.settings.cardNumbers;
         model.showSettings = true;
     };
 
     $scope.saveSettings = function () {
-        var cardNumbers = model.settings.cardNumbersString.replace(/ /g, '').split(",");
-        if (cardNumbers.length > 0 && model.settings.cardNumbers != cardNumbers) {
-            model.settings.cardNumbers = cardNumbers;
-        }
+        parseCardNumbers();
         $scope.updateServerSettings();
         $scope.writeSettings();
         model.showSettings = false;
     };
+
+    function parseCardNumbers() {
+        var cardNumbers = model.settings.cardNumbersString.replace(/ /g, '').split(",");
+        cardNumbers = Enumerable.From(cardNumbers).Distinct().ToArray();
+
+        model.settings.cardNumbers = cardNumbers;
+        model.settings.cardNumbersString = cardNumbers.join(', ');
+    }
 
     $scope.updateServerSettings = function () {
         socket.emit('updateSettings', createSettingsObject());
@@ -92,12 +95,12 @@ angular.module('ScrumWithSige').controller('ServerCtrl', ['$scope', '$location',
     }
 
     $scope.loadSettings = function () {
-        model.settings = $cookieStore.get('host-settings') || model.settings;
+        model.settings = JSON.parse(localStorage.getItem('hostSettings')) || model.settings;
     };
     $scope.loadSettings();
 
     $scope.writeSettings = function () {
-        $cookieStore.put('host-settings', model.settings);
+        localStorage.setItem('hostSettings', JSON.stringify(model.settings));
     };
 
     $scope.showStatsContainer = function () {
@@ -107,14 +110,13 @@ angular.module('ScrumWithSige').controller('ServerCtrl', ['$scope', '$location',
     };
 
     $scope.getCardValue = function (value, bigIcon) {
-        bigIcon = typeof bigIcon === 'undefined' ? false : bigIcon;
-        var cardValue = value;
-        if (value != null && value.indexOf('fa') > -1) {
-            var faBigClass = bigIcon ? " big" : "";
-            cardValue = '<i class="fa ' + value + faBigClass + '"></i>';
-        }
-        return $sce.trustAsHtml(cardValue);
-    }
+        return tools.getCardValue(value, bigIcon);
+    };
+
+    var faCoffee = "fa-coffee";
+    $scope.addCoffeeCup = function () {
+        model.settings.cardNumbersString += ", " + faCoffee;
+    };
 
     $scope.getCardContainerStyle = function() {
         return {'width': (model.users.length * 200) + 'px'};
@@ -132,7 +134,8 @@ angular.module('ScrumWithSige').controller('ServerCtrl', ['$scope', '$location',
         var style = {};
         if (model.settings.backgroundImage) {
             style = {
-                'background-image': 'url(' + model.settings.backgroundImage + ')'
+                'background-image': 'url(' + model.settings.backgroundImage + ')',
+                'background-size': 'cover'
             };
         }
         return style;
@@ -215,16 +218,23 @@ angular.module('ScrumWithSige').controller('ServerCtrl', ['$scope', '$location',
     $scope.updateVoteAverage = function () {
         var avg;
         if (getNumericUserVotes().Count() > 0) {
+            var roundResult = true;
+
             avg = getNumericUserVotes().Average();
 
             // Special case to handle .5
             if (getNumericUserVotes().Contains(.5)) {
-                if (avg >= .25 && avg <= .5) {
-                    avg = .5;
-                } else {
-                    var numDecimals = parseInt(model.settings.voteAverageNumDecimals);
-                    avg = avg.toFixed(numDecimals);
+                var numDecimals = parseInt(model.settings.voteAverageNumDecimals);
+                if (numDecimals == 0) {
+                    if (avg >= .25 && avg < .75) {
+                        roundResult = false;
+                        avg = .5;
+                    }
                 }
+            }
+
+            if (roundResult) {
+                avg = avg.toFixed(numDecimals); 
             }
         } else {
             avg = 0;
@@ -259,7 +269,7 @@ angular.module('ScrumWithSige').controller('ServerCtrl', ['$scope', '$location',
     function getNumericUserVotes() {
         return Enumerable.From(model.users)
             .Select(function (u) { return parseFloat(u.vote); })
-            .Where(function (n) { return !isNaN(n) && n != 999; });
+            .Where(function (n) { return !isNaN(n); });
     }
 
 }]);

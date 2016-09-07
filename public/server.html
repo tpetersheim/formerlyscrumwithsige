@@ -241,7 +241,9 @@
                 <br />
                 <label><input type="checkbox" ng-model="model.settings.showVoteMaximum"> Show Vote Maximum</label>
                 <br />
-                Card Numbers <input type="text" ng-model="model.settings.cardNumbersString" style="width: 200px;" />
+                Card Numbers <input type="text" ng-model="model.settings.cardNumbersString" style="width: 225px;" />
+                <span title="Supports Font Awesome icons!" style="cursor: default;">?</span>
+                <button ng-click="addCoffeeCup()" style="margin-left: 5px;">Add <i class="fa fa-coffee"></i></button>
                 <br />
                 Background Image URL <input type="text" ng-model="model.settings.backgroundImage" style="width: 240px;" />
                 <br /><br />
@@ -269,7 +271,7 @@
             <div class="card2" ng-class="{'flipped': model.allIn, 'unknown': user.vote == null}">
                 <div class="face front"></div>
                 <div class="face back">
-                   <span ng-show="user.vote != -1">
+                    <span ng-show="user.vote != -1">
                         <span class="orig-vote" ng-show="user.vote != user.orgVote" ng-bind-html="getCardValue(user.orgVote)"></span>
                         <span ng-bind-html="getCardValue(user.vote, true)"></span>
                     </span>
