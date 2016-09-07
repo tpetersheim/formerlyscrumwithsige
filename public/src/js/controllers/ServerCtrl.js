@@ -43,7 +43,7 @@ angular.module('ScrumWithSige').controller('ServerCtrl', ['$scope', '$location',
             showVoteSeparationThresholdCompromised: true,
             voteSeparationThreshold: 2,
             cardNumbersString: "",
-            cardNumbers: ["0", "0.5", "1", "2", "3", "5", "8", "13", "20", '?'],
+            cardNumbers: ["0", "0.5", "1", "2", "3", "5", "8", "13", "20", '?', 'fa-coffee'],
             backgroundImage: "images/fasttrack.jpg",
             sharedHtml: ""
         }
@@ -142,7 +142,9 @@ angular.module('ScrumWithSige').controller('ServerCtrl', ['$scope', '$location',
     };
 
     socket.on('connect', function(){
-        socket.emit('bindHost', {sid: model.sid, 'settings': createSettingsObject()});
+        socket.emit('bindHost', { sid: model.sid, 'settings': createSettingsObject() }, function () {
+            $scope.updateServerSettings();
+        });
     });
 
     socket.on('reset', function(mode) {
@@ -223,12 +225,12 @@ angular.module('ScrumWithSige').controller('ServerCtrl', ['$scope', '$location',
             avg = getNumericUserVotes().Average();
 
             // Special case to handle .5
-            if (getNumericUserVotes().Contains(.5)) {
-                var numDecimals = parseInt(model.settings.voteAverageNumDecimals);
-                if (numDecimals == 0) {
-                    if (avg >= .25 && avg < .75) {
+            var numDecimals = parseInt(model.settings.voteAverageNumDecimals);
+            if (getNumericUserVotes().Contains(0.5)) {
+                if (numDecimals === 0) {
+                    if (avg >= 0.25 && avg < 0.75) {
                         roundResult = false;
-                        avg = .5;
+                        avg = 0.5;
                     }
                 }
             }
