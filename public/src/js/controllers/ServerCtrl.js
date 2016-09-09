@@ -76,7 +76,7 @@ angular.module('ScrumWithSige').controller('ServerCtrl', ['$scope', '$location',
 
     function parseCardNumbers() {
         var cardNumbers = model.settings.cardNumbersString.replace(/ /g, '').split(",");
-        cardNumbers = Enumerable.From(cardNumbers).Distinct().ToArray();
+        cardNumbers = Enumerable.from(cardNumbers).Distinct().toArray();
 
         model.settings.cardNumbers = cardNumbers;
         model.settings.cardNumbersString = cardNumbers.join(', ');
@@ -219,14 +219,14 @@ angular.module('ScrumWithSige').controller('ServerCtrl', ['$scope', '$location',
 
     $scope.updateVoteAverage = function () {
         var avg;
-        if (getNumericUserVotes().Count() > 0) {
+        if (getNumericUserVotes().count() > 0) {
             var roundResult = true;
 
-            avg = getNumericUserVotes().Average();
+            avg = getNumericUserVotes().average();
 
             // Special case to handle .5
             var numDecimals = parseInt(model.settings.voteAverageNumDecimals);
-            if (getNumericUserVotes().Contains(0.5)) {
+            if (getNumericUserVotes().contains(0.5)) {
                 if (numDecimals === 0) {
                     if (avg >= 0.25 && avg < 0.75) {
                         roundResult = false;
@@ -246,32 +246,32 @@ angular.module('ScrumWithSige').controller('ServerCtrl', ['$scope', '$location',
     };
 
     $scope.updateVoteSeparation = function () {
-        var sortedCardNumbers = Enumerable.From(model.settings.cardNumbers)
-            .Select(function (n) { return parseFloat(n); })
-            .Where(function (n) { return !isNaN(n); })
-            .ToArray().sort(function (a, b) { return a - b; });
-        var voteIndexes = getNumericUserVotes().Select(function (v) {
+        var sortedCardNumbers = Enumerable.from(model.settings.cardNumbers)
+            .select(function (n) { return parseFloat(n); })
+            .where(function (n) { return !isNaN(n); })
+            .toArray().sort(function (a, b) { return a - b; });
+        var voteIndexes = getNumericUserVotes().select(function (v) {
             return sortedCardNumbers.indexOf(v);
         });
-        model.separation = voteIndexes.Count() > 0 ? (voteIndexes.Max() - voteIndexes.Min()) : 0;
+        model.separation = voteIndexes.count() > 0 ? (voteIndexes.max() - voteIndexes.min()) : 0;
     };
 
     $scope.updateVoteMinimum = function () {
-        model.minimum = getNumericUserVotes().Count() > 0 ? getNumericUserVotes().Min() : 0;
+        model.minimum = getNumericUserVotes().count() > 0 ? getNumericUserVotes().min() : 0;
     };
 
     $scope.updateVoteMaximum = function () {
-        model.maximum = getNumericUserVotes().Count() > 0 ? getNumericUserVotes().Max() : 0;
+        model.maximum = getNumericUserVotes().count() > 0 ? getNumericUserVotes().max() : 0;
     };
 
     $scope.updateVotesCounted = function () {
-        model.votesCounted = getNumericUserVotes().Count();
+        model.votesCounted = getNumericUserVotes().count();
     };
 
     function getNumericUserVotes() {
-        return Enumerable.From(model.users)
-            .Select(function (u) { return parseFloat(u.vote); })
-            .Where(function (n) { return !isNaN(n); });
+        return Enumerable.from(model.users)
+            .select(function (u) { return parseFloat(u.vote); })
+            .where(function (n) { return !isNaN(n); });
     }
 
 }]);

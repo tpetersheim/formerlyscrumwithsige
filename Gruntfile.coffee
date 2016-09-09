@@ -11,7 +11,7 @@ module.exports = (grunt) ->
             js:
                 vendor: [
                     "public/vendor/angular/angular.min.js"
-                    "public/vendor/angular/angular-cookies.min.js"
+                    "public/vendor/angular-cookies/angular-cookies.min.js"
                     "public/vendor/linqjs/linq.min.js"
                 ]
                 src: ["public/src/js/ScrumWithSige.js", "public/src/js/**/*.js"]

@@ -1,0 +1,23 @@
+{
+  "name": "scrumwithsige",
+  "description": "scrum estimation tool",
+  "main": "",
+  "authors": [
+    "Travis Petersheim <travis.petersheim@logmein.com>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/tpetersheim/scrumwithsige",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/vendor",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.5.8",
+    "angular-cookies": "^1.5.8",
+    "linqjs": "^3.0.5"
+  }
+}

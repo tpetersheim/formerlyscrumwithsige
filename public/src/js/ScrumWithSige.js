@@ -9,6 +9,6 @@ app.config(['$locationProvider', function($locationProvider) {
 }]);
 
 app.run(['$rootScope', function($rootScope) {
-    $rootScope.appName = "scrumwithsige";
+    $rootScope.appName = "formerlyscrumwithsige";
     $rootScope.appVersion = "{{APP.VERSION}}";
 }]);
