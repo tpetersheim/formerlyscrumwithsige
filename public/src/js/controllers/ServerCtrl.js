@@ -76,7 +76,7 @@ angular.module('ScrumWithSige').controller('ServerCtrl', ['$scope', '$location',
 
     function parseCardNumbers() {
         var cardNumbers = model.settings.cardNumbersString.replace(/ /g, '').split(",");
-        cardNumbers = Enumerable.from(cardNumbers).Distinct().toArray();
+        cardNumbers = Enumerable.from(cardNumbers).distinct().toArray();
 
         model.settings.cardNumbers = cardNumbers;
         model.settings.cardNumbersString = cardNumbers.join(', ');
