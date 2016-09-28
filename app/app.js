@@ -120,7 +120,7 @@ io.sockets.on('connection', function (socket) {
         }
     });
 
-    socket.on('disconnect', function(callback) {
+    socket.on('disconnect', function() {
         console.log(" ================================================");
         console.log("disconnect: " + socket.uid);
 
@@ -134,10 +134,6 @@ io.sockets.on('connection', function (socket) {
         }
 
         sendDumpToHost(socket.sid);
-
-        if (callback) {
-            callback();
-        }
     });
 
     socket.on("reset", function(callback) {
